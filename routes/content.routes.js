@@ -2,9 +2,9 @@ const express = require('express');
 const router = express.Router();
 const ContentController = require('../controllers/content.controller');
 
-router.get('/content',  ContentController.getContents );
-router.get('/content/:id', ContentController.getContentById);
-router.post('/content', ContentController.createContent);
-router.put('/content/:id', ContentController.updateContent);
-router.delete('/content/:id', ContentController.deleteContent);
+router.get('/',  ContentController.getContents );
+router.get('/:id', ContentController.getContentById);
+router.post('/', ContentController.createContent);
+router.put('/:id', ContentController.updateContent);
+router.delete('/:id', ContentController.deleteContent);
 module.exports = router;

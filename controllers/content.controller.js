@@ -66,19 +66,20 @@ exports.deleteContent = async (req, res) => {
 };
 exports.createContent = async (req, res) => {
   try {
-    const { title, poster, tags, year, isSeries, seasonCount, seasons, avgEpisodeTime } = req.body;
-
+   
+    const { title, poster, tags,type, year, genres,releaseDate, seasons } = req.body;
+    console.log(releaseDate,new Date(releaseDate))
     const newContent = new Content({
       title,
       poster,
       tags,
+      genres,
+      type,
       year,
-      isSeries,
-      seasonCount,
-      seasons,
-      avgEpisodeTime
+      releaseDate : releaseDate ? new Date(releaseDate) : null,
+      seasons
     });
-
+  
     const savedContent = await newContent.save();
 
     res.status(201).json(savedContent);
@@ -89,19 +90,14 @@ exports.createContent = async (req, res) => {
 exports.updateContent = async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, poster, tags, year, isSeries, seasonCount, seasons, avgEpisodeTime } = req.body;
+    const updatedFields = {};
 
-    const updatedContent = await Content.findByIdAndUpdate(id, {
-      title,
-      poster,
-      tags,
-      year,
-      isSeries,
-      seasonCount,
-      seasons,
-      avgEpisodeTime
-    }, { new: true });
-
+    Object.keys(req.body).forEach((key) => {
+      if (req.body[key]) {
+        updatedFields[key] = req.body[key];
+      }
+    });
+    const updatedContent = await Content.findByIdAndUpdate(id, updatedFields, { new: true });
     res.status(200).json(updatedContent);
   } catch (error) {
     res.status(500).json({ message: 'Error updating content', error });

@@ -9,20 +9,21 @@ const ContentSchema = new mongoose.Schema({
   },
   tags: [
     {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Tag'
+      type:String
     }
   ],
-  year: {
-    type: Number,
-    required: true
+  releaseDate: {
+    type: Date,
   },
+  genres: [{
+    type:String
+  }],
   actors: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Actor'
   }],
-  isSeries: {
-    type: Boolean,
+  type: {
+    type: String,
     required: true
   },
   seasons: [{
