@@ -20,7 +20,5 @@ const franchiseSchema = new mongoose.Schema({
   });
   
 const Franchise = mongoose.model('Franchise', franchiseSchema);
-module.exports = {
-    Franchise
-};
+module.exports = Franchise;
   

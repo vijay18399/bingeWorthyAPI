@@ -19,6 +19,4 @@ const cinematicUniverseSchema = new mongoose.Schema({
   }
 });
 const CinematicUniverse = mongoose.model('CinematicUniverse', cinematicUniverseSchema);
-module.exports = {
-  CinematicUniverse
-};
+module.exports = CinematicUniverse;
