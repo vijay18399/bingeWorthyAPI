@@ -1,8 +1,11 @@
+// season.model.js
 const mongoose = require('mongoose');
+const Episode = require('./episode.model');
+
 const SeasonSchema = new mongoose.Schema({
   number: {
     type: Number,
-    required: true
+    required: true,
   },
   description: {
     type: String,
@@ -10,12 +13,9 @@ const SeasonSchema = new mongoose.Schema({
   poster: {
     type: String,
   },
-  episodes: [
-    {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Episode'
-    }
-  ]
+  episodes: [Episode.schema], // Array of episodes within SeasonSchema
 });
+
 const Season = mongoose.model('Season', SeasonSchema);
+
 module.exports = Season;

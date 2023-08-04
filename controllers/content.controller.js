@@ -1,4 +1,4 @@
-
+const Actor = require('../models/actor.model');
 const Content = require("../models/content.model");
 exports.getContents = async (req, res) => {
   const { perPage, page, isSeries } = req.query;
@@ -66,9 +66,35 @@ exports.deleteContent = async (req, res) => {
 };
 exports.createContent = async (req, res) => {
   try {
-   
-    const { title, poster, tags,type, year, genres,releaseDate, seasons } = req.body;
-    console.log(releaseDate,new Date(releaseDate))
+    const {
+      title,
+      poster,
+      tags,
+      type,
+      year,
+      plot,
+      genres,
+      releaseDate,
+      seasons,
+      actors,
+    } = req.body;
+
+    const newActors = await Promise.all(
+      actors.map(async (actor) => {
+        try {
+          if(actor._id){
+            return actor._id;
+          }
+          else{
+            let actor = await new Actor({ _id: actorId }).save();
+            return actor._id;
+          }
+        } catch (error) {
+          throw new Error('Error creating actor');
+        }
+      })
+    );
+
     const newContent = new Content({
       title,
       poster,
@@ -76,10 +102,12 @@ exports.createContent = async (req, res) => {
       genres,
       type,
       year,
-      releaseDate : releaseDate ? new Date(releaseDate) : null,
-      seasons
+      plot,
+      releaseDate: releaseDate ? new Date(releaseDate) : null,
+      seasons,
+      actors: newActors,
     });
-  
+
     const savedContent = await newContent.save();
 
     res.status(201).json(savedContent);
@@ -87,6 +115,7 @@ exports.createContent = async (req, res) => {
     res.status(500).json({ message: 'Error creating content', error });
   }
 };
+
 exports.updateContent = async (req, res) => {
   try {
     const { id } = req.params;
@@ -97,11 +126,35 @@ exports.updateContent = async (req, res) => {
         updatedFields[key] = req.body[key];
       }
     });
-    const updatedContent = await Content.findByIdAndUpdate(id, updatedFields, { new: true });
+
+    // Check if actors are present in the request body
+    if (req.body.actors) {
+      const newActors = await Promise.all(
+        req.body.actors.map(async (actor) => {
+          try {
+            if(actor._id){
+              return actor._id;
+            }
+            else{
+              let actor = await new Actor({ _id: actorId }).save();
+              return actor._id;
+            }
+          } catch (error) {
+            throw new Error('Error creating actor');
+          }
+        })
+      );
+      updatedFields.actors = newActors;
+    }
+
+    const updatedContent = await Content.findByIdAndUpdate(id, updatedFields, {
+      new: true,
+    });
     res.status(200).json(updatedContent);
   } catch (error) {
     res.status(500).json({ message: 'Error updating content', error });
   }
 };
+
 
 
